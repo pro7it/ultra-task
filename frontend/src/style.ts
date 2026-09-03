@@ -2,8 +2,7 @@ import type { CSSProperties } from "react";
 
 export const styles: Record<string, CSSProperties> = {
   container: {
-    maxWidth: 600,
-    minWidth: 400,
+    width: 400,
     padding: 24,
     fontFamily: "system-ui",
     color: "#222",
@@ -42,10 +41,35 @@ export const styles: Record<string, CSSProperties> = {
     gap: 6,
   },
   listItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
     padding: "10px 12px",
     border: "1px solid #eee",
     borderRadius: 6,
     fontSize: 14,
+  },
+  listItemLabel: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    cursor: "pointer",
+    flex: 1,
+    minWidth: 0,
+  },
+  taskText: {
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
+  },
+  deleteButton: {
+    border: "none",
+    background: "transparent",
+    color: "#999",
+    fontSize: 16,
+    cursor: "pointer",
+    padding: "2px 6px",
+    flexShrink: 0,
   },
   listItemDone: {
     textDecoration: "line-through",

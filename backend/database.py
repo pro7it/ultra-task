@@ -109,5 +109,67 @@ def create_task(title):
     finally:
         connection.close()
 
+def toggle_task(task_id: int):
+    connection = get_connection()
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE tasks
+                SET completed = NOT completed
+                WHERE id = %s
+                RETURNING id, title, completed
+                """,
+                (task_id,)
+            )
+
+            row = cursor.fetchone()
+
+            if row is None:
+                return None
+
+        connection.commit()
+
+        return {
+            "id": row[0],
+            "title": row[1],
+            "completed": row[2]
+        }
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
+
+def delete_task(task_id: int):
+    connection = get_connection()
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                DELETE FROM tasks
+                WHERE id = %s
+                RETURNING id
+                """,
+                (task_id,)
+            )
+
+            row = cursor.fetchone()
+
+        connection.commit()
+
+        return row is not None
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()
+
 if __name__ == '__main__':
     init_db()

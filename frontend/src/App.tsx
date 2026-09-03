@@ -47,6 +47,48 @@ function App() {
     }
   };
 
+  const handleToggle = async (taskId: number) => {
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, completed: !t.completed } : t,
+      ),
+    );
+
+    try {
+      const res = await fetch(`${API_URL}/tasks/${taskId}/toggle`, {
+        method: "PATCH",
+      });
+      if (!res.ok) throw new Error(`Помилка: ${res.status}`);
+    } catch (e) {
+      console.error(e);
+      fetchTasks();
+    }
+  };
+
+  const handleDelete = async (taskId: number) => {
+    const prevTasks = tasks;
+    // оптимістично прибираємо таску одразу
+    setTasks((prev) => prev.filter((t) => t.id !== taskId));
+
+    try {
+      const res = await fetch(`${API_URL}/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error(`Помилка: ${res.status}`);
+    } catch (e) {
+      console.error(e);
+      // якщо видалення впало — повертаємо таску назад
+      setTasks(prevTasks);
+    }
+  };
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (a.completed !== b.completed) {
+      return a.completed ? 1 : -1;
+    }
+    return a.id - b.id;
+  });
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>Ultra-task</h1>
@@ -67,7 +109,7 @@ function App() {
       {loading && <p style={styles.muted}>Loading...</p>}
 
       <ul style={styles.list}>
-        {tasks.map((task) => (
+        {sortedTasks.map((task) => (
           <li
             key={task.id}
             style={{
@@ -75,7 +117,21 @@ function App() {
               ...(task.completed ? styles.listItemDone : {}),
             }}
           >
-            {task.title}
+            <label style={styles.listItemLabel}>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => handleToggle(task.id)}
+              />
+              <span style={styles.taskText}>{task.title}</span>
+            </label>
+            <button
+              style={styles.deleteButton}
+              onClick={() => handleDelete(task.id)}
+              aria-label="Delete task"
+            >
+              ✕
+            </button>
           </li>
         ))}
         {!loading && tasks.length === 0 && <p style={styles.muted}>No tasks</p>}
