@@ -1,14 +1,21 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from database import (
     get_all_tasks,
-    get_undone_tasks,
     create_task,
 )
 
-
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 
 class TaskCreate(BaseModel):
@@ -18,11 +25,6 @@ class TaskCreate(BaseModel):
 @app.get("/tasks/all")
 def all_tasks():
     return get_all_tasks()
-
-
-@app.get("/tasks/undone")
-def undone_tasks():
-    return get_undone_tasks()
 
 
 @app.post("/tasks/new")

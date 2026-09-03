@@ -78,33 +78,6 @@ def get_all_tasks():
         connection.close()
 
 
-def get_undone_tasks():
-    connection = get_connection()
-
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT id, title, completed
-                FROM tasks
-                WHERE completed = FALSE
-                ORDER BY id
-            """)
-
-            rows = cursor.fetchall()
-
-            return [
-                {
-                    "id": row[0],
-                    "title": row[1],
-                    "completed": row[2]
-                }
-                for row in rows
-            ]
-
-    finally:
-        connection.close()
-
-
 def create_task(title):
     connection = get_connection()
 

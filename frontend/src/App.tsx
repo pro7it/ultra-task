@@ -16,11 +16,12 @@ function App() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const url = `${API_URL}/tasks`;
+      const url = `${API_URL}/tasks/all`;
       const res = await fetch(url);
       const data = await res.json();
       setTasks(data);
     } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -30,16 +31,20 @@ function App() {
     fetchTasks();
   }, []);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/tasks`, {
+      const res = await fetch(`${API_URL}/tasks/new`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title }),
       });
+      if (!res.ok) throw new Error(`Помилка: ${res.status}`);
       setTitle("");
       fetchTasks();
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
