@@ -7,6 +7,6 @@ COPY . .
 RUN chmod +x install.sh start.sh \
     && ./install.sh
 
-EXPOSE 8080
+EXPOSE 5173
 
 CMD ["./start.sh"]
