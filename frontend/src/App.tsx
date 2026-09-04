@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { styles } from "./style";
-import { API_URL } from "./global";
 
 interface Task {
   id: number;
@@ -16,7 +15,7 @@ function App() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const url = `${API_URL}/tasks/all`;
+      const url = `/tasks/all`;
       const res = await fetch(url);
       const data = await res.json();
       setTasks(data);
@@ -34,7 +33,7 @@ function App() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/tasks/new`, {
+      const res = await fetch(`/tasks/new`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title }),
@@ -55,7 +54,7 @@ function App() {
     );
 
     try {
-      const res = await fetch(`${API_URL}/tasks/${taskId}/toggle`, {
+      const res = await fetch(`/tasks/${taskId}/toggle`, {
         method: "PATCH",
       });
       if (!res.ok) throw new Error(`Помилка: ${res.status}`);
@@ -67,17 +66,15 @@ function App() {
 
   const handleDelete = async (taskId: number) => {
     const prevTasks = tasks;
-    // оптимістично прибираємо таску одразу
     setTasks((prev) => prev.filter((t) => t.id !== taskId));
 
     try {
-      const res = await fetch(`${API_URL}/tasks/${taskId}`, {
+      const res = await fetch(`/tasks/${taskId}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error(`Помилка: ${res.status}`);
     } catch (e) {
       console.error(e);
-      // якщо видалення впало — повертаємо таску назад
       setTasks(prevTasks);
     }
   };

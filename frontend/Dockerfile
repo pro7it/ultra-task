@@ -1,12 +1,20 @@
-FROM alpine:latest
+FROM node:alpine AS builder
 
-WORKDIR /opt/ultra-task
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
 
 COPY . .
 
-RUN chmod +x install.sh start.sh \
-    && ./install.sh
 
-EXPOSE 5173
+RUN npm run build
 
-CMD ["./start.sh"]
+FROM nginx:alpine
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
