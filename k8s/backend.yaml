@@ -19,10 +19,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ultra-task-backend:latest
-
-          imagePullPolicy: Never
-
+          image: ghcr.io/pro7it/ultra-task-backend:9cb0d504cf5ad6ba5c83eed322965f94a9854159
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
 

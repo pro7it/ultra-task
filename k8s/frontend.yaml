@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ultra-task-frontend:latest
-          imagePullPolicy: Never
+          image: ghcr.io/pro7it/ultra-task-frontend:9cb0d504cf5ad6ba5c83eed322965f94a9854159
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
 
